@@ -1,7 +1,7 @@
 require('dotenv').config()
 const { handler } = require('./src/controllers/switcher')
 const menu = require('./src/modules/common_menu')
-const { bot } = require('./globalBuffer')
+const { bot, selectedByUser } = require('./globalBuffer')
 const { isThisGroupId } = require('./src/modules/bot')
 const mF = require('./src/controllers/toMailForm')
 
@@ -25,7 +25,8 @@ bot.on('message', async (msg) => {
       await bot.sendMessage(chatId, 'MAil composed!')
       await bot.sendMessage(chatId, 'From: ' + data?.from)
       await bot.sendMessage(chatId, 'To: ' + data?.to)
-      return
+      selectedByUser[chatId].mailData = data
+      await menu.commonStartMenu(bot, msg, true)
     } catch (e) {
       console.log(e)
     }

@@ -1,80 +1,53 @@
 const nodemailer = require('nodemailer')
-const axios = require('axios')
 const FormData = require('form-data')
 const fs = require('fs')
+const path = require('path')
+const { selectedByUser } = require('../../globalBuffer')
 require('dotenv').config()
 
-const { MAILHOST, MAILPORT } = process.env
+const { MAIL_HOST, MAIL_PORT } = process.env
 
-async function sendMail(message, filename) {
+module.exports.sendMail = async function (chatId) {
   try {
+    const message = selectedByUser[chatId]?.mailData
+    if (!message?.from || !message?.to || !message?.subject || !message?.content) {
+      console.error("Error sending mail: missing data")
+      return false
+    }
+
     let transporter = nodemailer.createTransport({
-      host: MAILHOST,
-      port: Number(MAILPORT),
+      host: MAIL_HOST,
+      port: Number(MAIL_PORT),
       secure: false,
       auth: {
         user: message.from,
-        pass: undefined
+        pass: message?.password || process.env.MAIL_PASSWORD
       }
     })
 
-    const attachment = {
-      filename: 'receipt.pdf',
-      path: filename
+    message.attachments = selectedByUser[chatId].AttachmentFileNames.map(file => ({
+      filename: path.basename(file.path),
+      path: file.path
+    }))
+
+    const letter = {
+      from: message.from,
+      to: message.to,
+      subject: message.subject,
+      text: message.content,
+      attachments: message.attachments
     }
 
-    message.attachments = [attachment]
-    if (process.env.MAIL_TEST === 'true') {
-      message.to = process.env.MAIL_TEST_TO
-    }
-
-    let info = await transporter.sendMail(message)
+    let info = await transporter.sendMail(letter)
 
     console.log("Message sent: %s", info.messageId)
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info))
-  } catch (error) {
-    console.error(error)
-  }
 
-}
-
-async function sendTelegram(tg_id, fileName) {
-  try {
-    const url = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendDocument`
-    const formData = new FormData()
-    formData.append('chat_id', tg_id)
-    formData.append('document', fs.createReadStream(fileName), {
-      filename: 'receipt.pdf',
-      contentType: 'application/pdf'
-    })
-
-    const response = await axios.post(url, formData, {
-      headers: formData.getHeaders()
-    })
-
-    console.log(response.data)
+    selectedByUser[chatId].AttachmentFileNames = []
+    selectedByUser[chatId].mailData = {}
     return true
   } catch (error) {
-    console.error(error)
-  }
-}
-
-async function sendTxtMsgToTelegram(message) {
-
-  const apiToken = process.env.TELEGRAM_BOT_TOKEN
-  const GROUP_ID = process.env.GROUP_ID
-  try {
-    await axios.post(`https://api.telegram.org/bot${apiToken}/sendMessage`, {
-      chat_id: GROUP_ID,
-      text: message,
-    })
-    console.log('Message sent successfully')
-    return true
-  } catch (error) {
-    console.error('Error sending Telegram message:', error.message)
+    console.error("Error sending mail:", error)
     return false
   }
-
 }
-
-module.exports = { sendMail, sendTelegram, sendTxtMsgToTelegram }

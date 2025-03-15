@@ -25,14 +25,14 @@ module.exports.clientsAdmin = async function (bot, msg) {
   await module.exports.menuStarter(bot, msg)
 }
 
-module.exports.menuStarter = async function (bot, msg, lang = 'pl') {
+module.exports.menuStarter = async function (bot, msg, lang = 'en') {
   await module.exports.sendstarterButtons(bot, msg, lang)
   console.log(((new Date()).toLocaleTimeString()))
 }
 
 module.exports.sendstarterButtons = async function (bot, msg) {
   const { title, buttons } = buttonsConfig["starterButtons"]
-  const lang = selectedByUser[msg.chat.id]?.language || 'pl'
+  const lang = selectedByUser[msg.chat.id]?.language || 'en'
   await bot.sendMessage(msg.chat.id, title[lang], {
     reply_markup: {
       keyboard: buttons[lang],
