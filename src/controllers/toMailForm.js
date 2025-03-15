@@ -5,11 +5,17 @@ const GROUP_ID = Number(process.env.GROUP_ID)
 const SENDER = process.env.SENDER
 
 async function mailComposeForm(bot, msg, webAppUrl) {
-  const chatId = msg.chat.id;
-  await bot.sendMessage(chatId, 'Нижче з`явиться кнопка, заповніть форму', {
+  const chatId = msg.chat.id
+  const fromList = ["example1@mail.com", "example2@mail.com"]
+  const toList = ["recipient1@mail.com", "recipient2@mail.com"]
+  const fromListParam = encodeURIComponent(JSON.stringify(fromList))
+  const toListParam = encodeURIComponent(JSON.stringify(toList))
+  const url = `${webAppUrl}/mail-form/?fromList=${fromListParam}&toList=${toListParam}`
+
+  await bot.sendMessage(chatId, 'A button will appear below, fill out the form', {
     reply_markup: {
       keyboard: [
-        [{ text: 'Заповнити форму', web_app: { url: webAppUrl + '/mail-form/' } }],
+        [{ text: '📩 Compose the mail', web_app: { url } }],
         [{ text: '🏠', callback_data: '0_4' }]
       ],
       resize_keyboard: true
