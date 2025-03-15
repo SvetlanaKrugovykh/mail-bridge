@@ -37,23 +37,23 @@ module.exports.notTextScene = async function (bot, msg, lang = "en", toSend = tr
           collectedMessages.push({ type: 'text', content: message.text })
         } else if (message.photo) {
           fileId = message.photo[message.photo.length - 1].file_id
-          fileExtension = 'jpg'
-          originalFileName = `photo_${new Date().getTime()}.jpg`
+          fileExtension = '.jpg'
+          originalFileName = `photo_${new Date().getTime()}${fileExtension}`
           collectedMessages.push({ type: 'photo', fileId })
         } else if (message.document) {
           fileId = message.document.file_id
           fileExtension = path.extname(message.document.file_name)
-          originalFileName = message.document.file_name
+          originalFileName = `document_${new Date().getTime()}${fileExtension}`
           collectedMessages.push({ type: 'document', fileId })
         } else if (message.audio) {
           fileId = message.audio.file_id
           fileExtension = path.extname(message.audio.file_name)
-          originalFileName = message.audio.file_name
+          originalFileName = `audio_${new Date().getTime()}${fileExtension}`
           collectedMessages.push({ type: 'audio', fileId })
         } else if (message.voice) {
           fileId = message.voice.file_id
-          fileExtension = 'ogg'
-          originalFileName = `voice_${new Date().getTime()}.ogg`
+          fileExtension = '.ogg'
+          originalFileName = `voice_${new Date().getTime()}${fileExtension}`
           collectedMessages.push({ type: 'voice', fileId })
         }
       }

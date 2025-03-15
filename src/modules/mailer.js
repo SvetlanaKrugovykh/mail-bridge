@@ -25,10 +25,7 @@ module.exports.sendMail = async function (chatId) {
       }
     })
 
-    message.attachments = selectedByUser[chatId].AttachmentFileNames.map(file => ({
-      filename: path.basename(file.path),
-      path: file.path
-    }))
+    message.attachments = selectedByUser[chatId].AttachmentFileNames
 
     const letter = {
       from: message.from,
