@@ -1,14 +1,23 @@
+const { selectedByUser } = require('../../globalBuffer')
 const { buttonsConfig } = require('../data/keyboard')
 require('dotenv').config()
 const { users } = require('../users/users.model')
 
-async function mailComposeForm(bot, msg, webAppUrl) {
+async function mailComposeForm(bot, msg, webAppUrl, type = 'compose') {
 
   const chatId = msg.chat.id
   try {
     const USER = users.find(user => user.id === chatId)
-    const fromList = USER.fromList
-    const toList = USER.toList
+    let fromList, toList
+
+
+    if (type === 'compose') {
+      fromList = USER.fromList
+      toList = USER.toList
+    } else {
+      fromList = selectedByUser[chatId]?.mailData?.fromList
+      toList = selectedByUser[chatId]?.mailData?.toList
+    }
     const fromListParam = encodeURIComponent(JSON.stringify(fromList))
     const toListParam = encodeURIComponent(JSON.stringify(toList))
     const url = `${webAppUrl}/mail-form/?fromList=${fromListParam}&toList=${toListParam}`

@@ -45,6 +45,9 @@ async function handler(bot, msg) {
     case '0_3':
       await mailComposeForm(bot, msg, webAppUrl)
       break
+    case '0_7':
+      await mailComposeForm(bot, msg, webAppUrl, 'reply')
+      break
     case '0_5':
       await sendMail(chatId)
       break

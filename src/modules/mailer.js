@@ -41,7 +41,7 @@ module.exports.sendMail = async function (chatId) {
     selectedByUser[chatId].mailData = {}
     return true
   } catch (error) {
-    console.error("Error sending mail:", error)
+    console.log("Error sending mail:", error.response || error.message)
     return false
   }
 }
