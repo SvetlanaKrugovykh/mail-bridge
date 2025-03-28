@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer')
 const { selectedByUser } = require('../../globalBuffer')
 require('dotenv').config()
 
-const { MAIL_HOST, MAIL_PORT } = process.env
+const { MAIL_HOST, MAIL_PORT, MAIL_USER, MAIL_PASSWORD } = process.env
 
 module.exports.sendMail = async function (chatId) {
   try {
@@ -17,8 +17,8 @@ module.exports.sendMail = async function (chatId) {
       port: Number(MAIL_PORT),
       secure: false,
       auth: {
-        user: message.from,
-        pass: message?.password || process.env.MAIL_PASSWORD
+        user: MAIL_USER,
+        pass: MAIL_PASSWORD
       }
     })
 
