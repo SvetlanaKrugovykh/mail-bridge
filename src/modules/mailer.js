@@ -1,7 +1,4 @@
 const nodemailer = require('nodemailer')
-const FormData = require('form-data')
-const fs = require('fs')
-const path = require('path')
 const { selectedByUser } = require('../../globalBuffer')
 require('dotenv').config()
 

@@ -89,15 +89,15 @@ module.exports.notTextScene = async function (bot, msg, lang = "en", toSend = tr
 
     for (const message of collectedMessages) {
       if (message.type === 'text') {
-        if (toSend) await bot.sendMessage(GROUP_ID, `Message from ${msg.chat.first_name} ${msg.chat.last_name} (ID: ${msg.chat.id}):\n${message.content}`, { parse_mode: "HTML" })
+        if (toSend && process.env.DEBUG_MODE === 'true') await bot.sendMessage(GROUP_ID, `Message from ${msg.chat.first_name} ${msg.chat.last_name} (ID: ${msg.chat.id}):\n${message.content}`, { parse_mode: "HTML" })
       } else {
-        if (toSend) await bot.sendMessage(GROUP_ID, `Message from ${msg.chat.first_name} ${msg.chat.last_name} (ID: ${msg.chat.id}):`, { parse_mode: "HTML" })
+        if (toSend && process.env.DEBUG_MODE === 'true') await bot.sendMessage(GROUP_ID, `Message from ${msg.chat.first_name} ${msg.chat.last_name} (ID: ${msg.chat.id}):`, { parse_mode: "HTML" })
 
-        if (message.type === 'photo') {
+        if (message.type === 'photo' && process.env.DEBUG_MODE === 'true') {
           await bot.sendPhoto(GROUP_ID, message.fileId)
-        } else if (message.type === 'document') {
+        } else if (message.type === 'document' && process.env.DEBUG_MODE === 'true') {
           await bot.sendDocument(GROUP_ID, message.fileId)
-        } else if (message.type === 'audio') {
+        } else if (message.type === 'audio' && process.env.DEBUG_MODE === 'true') {
           await bot.sendAudio(GROUP_ID, message.fileId)
         } else if (message.type === 'voice') {
           const dirPath = process.env.TEMP_DOWNLOADS_CATALOG
