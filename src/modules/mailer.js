@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer')
 const { selectedByUser } = require('../../globalBuffer')
+const tg_output = require('./tg_output')
 require('dotenv').config()
 
 const { MAIL_HOST, MAIL_PORT, MAIL_USER, MAIL_PASSWORD } = process.env
@@ -8,6 +9,7 @@ module.exports.sendMail = async function (chatId) {
   try {
     const message = selectedByUser[chatId]?.mailData
     if (!message?.from || !message?.to || !message?.subject || !message?.content) {
+      await tg_output.sendMessage(chatId, "Error sending mail: missing data")
       console.error("Error sending mail: missing data")
       return false
     }
@@ -41,6 +43,7 @@ module.exports.sendMail = async function (chatId) {
     selectedByUser[chatId].mailData = {}
     return true
   } catch (error) {
+    await tg_output.sendMessage(chatId, "Error sending mail: " + error.message)
     console.log("Error sending mail:", error.response || error.message)
     return false
   }
