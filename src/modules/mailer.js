@@ -10,9 +10,15 @@ module.exports.sendMail = async function (chatId) {
     const message = selectedByUser[chatId]?.mailData
     if (!message?.from || !message?.to || !message?.subject || !message?.content) {
       await tg_output.sendMessage(chatId, "Error sending mail: missing data")
+      selectedByUser[chatId].AttachmentFileNames = []
+      selectedByUser[chatId].mailData = {}
       console.error("Error sending mail: missing data")
       return false
     }
+
+    const recipients = message.to.includes(',')
+      ? message.to.split(',').map(email => email.trim())
+      : message.to
 
     let transporter = nodemailer.createTransport({
       host: MAIL_HOST,
@@ -28,7 +34,7 @@ module.exports.sendMail = async function (chatId) {
 
     const letter = {
       from: message.from,
-      to: message.to,
+      to: recipients,
       subject: message.subject,
       text: message.content,
       attachments: message.attachments
@@ -44,6 +50,8 @@ module.exports.sendMail = async function (chatId) {
     return true
   } catch (error) {
     await tg_output.sendMessage(chatId, "Error sending mail: " + error.message)
+    selectedByUser[chatId].AttachmentFileNames = []
+    selectedByUser[chatId].mailData = {}
     console.log("Error sending mail:", error.response || error.message)
     return false
   }
