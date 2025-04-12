@@ -20,6 +20,8 @@ module.exports.sendMail = async function (chatId) {
       ? message.to.split(',').map(email => email.trim())
       : message.to
 
+    console.log("Sending mail to:", recipients)
+
     let transporter = nodemailer.createTransport({
       host: MAIL_HOST,
       port: Number(MAIL_PORT),
