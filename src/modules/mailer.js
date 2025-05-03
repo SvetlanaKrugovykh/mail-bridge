@@ -42,6 +42,16 @@ module.exports.sendMail = async function (chatId) {
       attachments: message.attachments
     }
 
+    if (selectedByUser[chatId]?.ReplyTo) {
+      const replyTo = selectedByUser[chatId].ReplyTo.trim()
+      if (/^<.+@.+\..+>$/.test(replyTo) || /^[^<>]+@[^<>]+\.[^<>]+$/.test(replyTo)) {
+        letter.inReplyTo = replyTo
+        console.log("Reply-To added:", replyTo)
+      } else {
+        console.warn("Invalid Reply-To format:", replyTo)
+      }
+    }
+
     let info = await transporter.sendMail(letter)
 
     console.log("Message sent: %s", info.messageId)
@@ -54,6 +64,7 @@ module.exports.sendMail = async function (chatId) {
     await tg_output.sendMessage(chatId, "Error sending mail: " + error.message)
     selectedByUser[chatId].AttachmentFileNames = []
     selectedByUser[chatId].mailData = {}
+    selectedByUser[chatId].ReplyTo = ''
     console.log("Error sending mail:", error.response || error.message)
     return false
   }

@@ -2,6 +2,7 @@ const { buttonsConfig } = require('../data/keyboard')
 const menu = require('../modules/common_menu')
 const { mailComposeForm } = require('./toMailForm')
 const { globalBuffer, selectedByUser } = require('../../globalBuffer')
+const { inputLineScene } = require('./inputLine')
 const { sendMail } = require('../modules/mailer')
 require('dotenv').config()
 
@@ -46,7 +47,8 @@ async function handler(bot, msg) {
       await mailComposeForm(bot, msg, webAppUrl)
       break
     case '0_7':
-      await mailComposeForm(bot, msg, webAppUrl, 'reply')
+      selectedByUser[chatId].ReplyTo = ''
+      selectedByUser[chatId].ReplyTo = await inputLineScene(bot, msg)
       break
     case '0_5':
       await sendMail(chatId)
