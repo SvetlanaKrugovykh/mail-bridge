@@ -43,12 +43,15 @@ module.exports.sendMail = async function (chatId) {
     }
 
     if (selectedByUser[chatId]?.ReplyTo) {
-      const replyTo = selectedByUser[chatId].ReplyTo.trim()
-      if (/^<.+@.+\..+>$/.test(replyTo) || /^[^<>]+@[^<>]+\.[^<>]+$/.test(replyTo)) {
+      let replyTo = selectedByUser[chatId].ReplyTo.trim()
+
+      if (replyTo && /^Message-ID:\s*<.+@.+\..+>$/.test(replyTo)) {
+        replyTo = replyTo.replace('Message-ID:', '').trim()
         letter.inReplyTo = replyTo
+        letter.references = replyTo
         console.log("Reply-To added:", replyTo)
       } else {
-        console.warn("Invalid Reply-To format:", replyTo)
+        console.warn("Invalid or empty Reply-To format, skipping:", replyTo)
       }
     }
 

@@ -2,6 +2,7 @@ require('dotenv').config()
 const { handler } = require('./src/controllers/switcher')
 const menu = require('./src/modules/common_menu')
 const { bot, selectedByUser } = require('./globalBuffer')
+require('./src/modules/logMonitor')
 const { isThisGroupId } = require('./src/modules/bot')
 const mF = require('./src/controllers/toMailForm')
 
