@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const cron = require('node-cron')
-const { bot } = require('../../index')
+const { bot } = require('../../globalBuffer')
 require('dotenv').config()
 
 const LOG_FILE_PATH = process.env.LOG_FILE_PATH
