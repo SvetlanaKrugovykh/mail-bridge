@@ -5,21 +5,21 @@ const GROUP_ID = Number(process.env.GROUP_ID)
 const { globalBuffer, selectedByUser } = require('../../globalBuffer')
 
 async function actionsOnId(bot, msg, inputLine) {
-  // if (inputLine !== undefined) {
-  //   if (inputLine.includes('id#')) {
-  //     let id = inputLine.split('id#')[1]
-  //     let msgtext = inputLine.split('id#')[2]
-  //     try {
-  //       await bot.sendMessage(id, `Дякуємо за звернення, відповідь: \n ${msgtext}`, { parse_mode: 'HTML' })
-  //       await bot.sendMessage(msg.chat.id, `🥎🥎 id# request sent\n`, { parse_mode: 'HTML' })
-  //     } catch (err) {
-  //       if (err.code === 'ETELEGRAM' && err.response?.body?.description === 'Bad Request: chat not found') {
-  //       } else {
-  //         console.log(err)
-  //       }
-  //     }
-  //   }
-  // }
+  if (inputLine !== undefined) {
+    if (inputLine.includes('id#')) {
+      let id = inputLine.split('id#')[1]
+      let msgtext = inputLine.split('id#')[2]
+      try {
+        await bot.sendMessage(id, `Дякуємо за звернення, відповідь: \n ${msgtext}`, { parse_mode: 'HTML' })
+        await bot.sendMessage(msg.chat.id, `🥎🥎 id# request sent\n`, { parse_mode: 'HTML' })
+      } catch (err) {
+        if (err.code === 'ETELEGRAM' && err.response?.body?.description === 'Bad Request: chat not found') {
+        } else {
+          console.log(err)
+        }
+      }
+    }
+  }
 }
 
 module.exports.clientsAdmin = async function (bot, msg) {
