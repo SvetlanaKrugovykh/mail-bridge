@@ -9,13 +9,14 @@ async function actionsOnId(bot, msg, inputLine) {
     if (inputLine.includes('id#')) {
       let id = inputLine.split('id#')[1]
       let msgtext = inputLine.split('id#')[2]
-      console.log('id', id)
-      console.log('msgtext', msgtext)
       try {
         await bot.sendMessage(id, `Дякуємо за звернення, відповідь: \n ${msgtext}`, { parse_mode: 'HTML' })
         await bot.sendMessage(msg.chat.id, `🥎🥎 id# request sent\n`, { parse_mode: 'HTML' })
       } catch (err) {
-        console.log(err)
+        if (err.code === 'ETELEGRAM' && err.response?.body?.description === 'Bad Request: chat not found') {
+        } else {
+          console.log(err)
+        }
       }
     }
   }
