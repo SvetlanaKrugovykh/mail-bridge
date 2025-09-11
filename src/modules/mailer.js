@@ -29,7 +29,8 @@ module.exports.sendMail = async function (chatId) {
       auth: {
         user: MAIL_USER,
         pass: MAIL_PASSWORD
-      }
+      },
+      localAddress: process.env.MAIL_LOCAL_IP || '127.0.0.1',
     })
 
     message.attachments = selectedByUser[chatId].AttachmentFileNames
