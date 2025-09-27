@@ -9,6 +9,7 @@ const GROUP_ID = process.env.GROUP_ID
 const TIME_OFFSET = 3 * 60 * 60 * 1000
 
 let lastProcessedTimestamp = 0
+const sentReports = new Set()
 
 const analyzeLogFile = () => {
   try {
@@ -44,8 +45,13 @@ const analyzeLogFile = () => {
     })
 
     errorsToReport.forEach(async (errorReport) => {
-      if (!errorReport.includes('Notification already sent, skipping duplicate')) {
+      const key = errorReport.trim();
+      if (
+        !errorReport.includes('Notification already sent, skipping duplicate') &&
+        !sentReports.has(key)
+      ) {
         await bot.sendMessage(GROUP_ID, `<pre>🖌️(time +3 hours!)${errorReport}</pre>`, { parse_mode: 'HTML' });
+        sentReports.add(key);
       }
     })
 
@@ -60,3 +66,8 @@ const analyzeLogFile = () => {
 cron.schedule('*/10 * * * *', analyzeLogFile)
 
 console.log('Log monitoring started...')
+
+cron.schedule('0 6 * * *', () => {
+  sentReports.clear()
+  console.log('sentReports cleared')
+})
