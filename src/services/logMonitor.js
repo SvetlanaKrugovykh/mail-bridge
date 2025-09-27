@@ -44,7 +44,9 @@ const analyzeLogFile = () => {
     })
 
     errorsToReport.forEach(async (errorReport) => {
-      await bot.sendMessage(GROUP_ID, `<pre>🖌️(time +3 hours!)${errorReport}</pre>`, { parse_mode: 'HTML' })
+      if (!errorReport.includes('Notification already sent, skipping duplicate')) {
+        await bot.sendMessage(GROUP_ID, `<pre>🖌️(time +3 hours!)${errorReport}</pre>`, { parse_mode: 'HTML' });
+      }
     })
 
     if (errorsToReport.length > 0) {
